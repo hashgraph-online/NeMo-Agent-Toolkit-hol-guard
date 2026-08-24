@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nat"]
+
+[project]
+name = "nemo-agent-toolkit-hol-guard"
+version = "0.1.0"
+requires-python = ">=3.11,<3.14"
+description = "HOL Guard runtime security middleware for NVIDIA NeMo Agent Toolkit"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Hashgraph Online" }]
+dependencies = [
+  "nvidia-nat-core>=1.8,<2",
+  "hol-guard>=3.0.0a195,<4",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8.0",
+  "pytest-asyncio>=0.24",
+]
+
+[project.urls]
+Homepage = "https://hol.org/guard"
+Source = "https://github.com/hashgraph-online/NeMo-Agent-Toolkit-hol-guard"
+Issues = "https://github.com/hashgraph-online/NeMo-Agent-Toolkit-hol-guard/issues"
+"NeMo Agent Toolkit" = "https://docs.nvidia.com/nemo/agent-toolkit/latest/"
+
+[project.entry-points."nat.plugins"]
+nat_hol_guard = "nat.plugins.hol_guard.register"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
