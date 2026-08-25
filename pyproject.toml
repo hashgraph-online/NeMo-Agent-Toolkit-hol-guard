@@ -15,7 +15,6 @@ license = { text = "Apache-2.0" }
 authors = [{ name = "Hashgraph Online" }]
 dependencies = [
   "nvidia-nat-core>=1.8,<2",
-  "hol-guard>=3.0.0a195,<4",
 ]
 
 [project.optional-dependencies]
