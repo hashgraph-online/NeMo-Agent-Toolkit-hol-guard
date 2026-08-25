@@ -11,7 +11,7 @@ This package follows NeMo Agent Toolkit's third-party plugin model: provider-own
 1. converts the function name and current arguments into HOL Guard's generic `PreToolUse` event contract;
 2. evaluates the event locally with `hol-guard hook --harness nemo-agent-toolkit`;
 3. lets return code `0` proceed;
-4. maps HOL Guard's deny return code `1` to `InvocationAction.SKIP`, so NeMo Agent Toolkit does not invoke the protected function; and
+4. short-circuits a denied call before `call_next` is invoked, so the protected function never executes; and
 5. fails closed by default if the local Guard decision cannot be obtained.
 
 HOL Guard remains local-first. This integration does not require Guard Cloud. Coverage depends on the semantics exposed by each tool/function and the active HOL Guard policy.
@@ -106,7 +106,7 @@ The remaining dynamic discovery fields are inherited from NeMo Agent Toolkit's p
 
 The middleware sends function arguments only to the local `hol-guard` process. Its temporary event file is created with user-only permissions and removed after each decision. No Guard Cloud connection is required.
 
-A deny is enforced before the protected function runs by setting NeMo Agent Toolkit's `InvocationAction.SKIP`. If Guard exits unexpectedly or times out, the integration raises by default rather than silently executing the function. Operators may explicitly set `fail_closed: false` if availability is more important than enforcement.
+A deny is enforced before the protected function runs by raising from the middleware before delegating to NeMo Agent Toolkit's `call_next`. If Guard exits unexpectedly or times out, the integration raises by default rather than silently executing the function. Operators may explicitly set `fail_closed: false` if availability is more important than enforcement.
 
 ## Test
 
@@ -115,7 +115,7 @@ python -m pip install -e '.[test]'
 pytest
 ```
 
-The test suite covers event normalization, allow/deny exit handling, middleware configuration, and entry-point loading. GitHub Actions tests Python 3.11, 3.12, and 3.13 against the declared NeMo Agent Toolkit 1.8 compatibility floor.
+The test suite covers event normalization, allow/deny exit handling, the zero-execution deny invariant, exactly-once allow delegation, middleware configuration, and entry-point loading. GitHub Actions tests Python 3.11, 3.12, and 3.13 against the declared NeMo Agent Toolkit 1.8 compatibility floor.
 
 ## Package metadata
 
