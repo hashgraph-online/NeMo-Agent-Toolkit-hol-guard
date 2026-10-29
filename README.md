@@ -18,39 +18,13 @@ HOL Guard remains local-first. This integration does not require Guard Cloud. Co
 
 ## Status
 
-This repository is the provider-owned integration requested in [NVIDIA/NeMo-Agent-Toolkit#2176](https://github.com/NVIDIA/NeMo-Agent-Toolkit/issues/2176). It is being prepared for NVIDIA's initial **Listed** third-party plugin review. It is not yet an NVIDIA-listed plugin and is not yet published to PyPI.
+This repository is the provider-owned integration requested in [NVIDIA/NeMo-Agent-Toolkit#2176](https://github.com/NVIDIA/NeMo-Agent-Toolkit/issues/2176). It is published to PyPI as [`nemo-agent-toolkit-hol-guard`](https://pypi.org/project/nemo-agent-toolkit-hol-guard/) with a prebuilt wheel, and is being prepared for NVIDIA's initial **Listed** third-party plugin review. It is not yet an NVIDIA-listed plugin.
 
-The integration currently targets NeMo Agent Toolkit 1.8.x and the opt-in HOL Guard 3.x alpha CLI. HOL Guard is intentionally installed as a separate CLI rather than as a Python dependency of this package. That keeps NeMo Agent Toolkit's Python dependency graph isolated while preserving a narrow local subprocess boundary for Guard decisions.
+The integration targets NeMo Agent Toolkit 1.8 and later 1.x releases, and the HOL Guard 3.x CLI. HOL Guard is intentionally installed as a separate CLI rather than as a Python dependency of this package. That keeps NeMo Agent Toolkit's Python dependency graph isolated while preserving a narrow local subprocess boundary for Guard decisions.
 
 ## Install
 
-### Review/development checkout
-
-Using `uv`:
-
-```bash
-git clone https://github.com/hashgraph-online/NeMo-Agent-Toolkit-hol-guard.git
-cd NeMo-Agent-Toolkit-hol-guard
-uv sync --extra test
-uv run pytest
-```
-
-Using `pip`:
-
-```bash
-git clone https://github.com/hashgraph-online/NeMo-Agent-Toolkit-hol-guard.git
-cd NeMo-Agent-Toolkit-hol-guard
-python -m pip install -e '.[test]'
-pytest
-```
-
-Install the HOL Guard 3.x CLI separately so the `hol-guard` executable is on `PATH`, for example with an isolated tool environment:
-
-```bash
-pipx install 'hol-guard>=3.0.0a195,<4'
-```
-
-After the provider package is approved/listed and published, the intended package installs are:
+Install the plugin from PyPI into the same environment as NeMo Agent Toolkit:
 
 ```bash
 uv add nemo-agent-toolkit-hol-guard
@@ -58,7 +32,22 @@ uv add nemo-agent-toolkit-hol-guard
 pip install nemo-agent-toolkit-hol-guard
 ```
 
-The provider package itself depends only on the public `nvidia-nat-core` plugin surface. It invokes the separately installed HOL Guard executable at runtime.
+Install the HOL Guard 3.x CLI separately so the `hol-guard` executable is on `PATH`, for example with an isolated tool environment:
+
+```bash
+pipx install 'hol-guard>=3.0,<4'
+```
+
+The plugin package itself depends only on the public `nvidia-nat-core` plugin surface. It invokes the separately installed HOL Guard executable at runtime.
+
+### Development checkout
+
+```bash
+git clone https://github.com/hashgraph-online/NeMo-Agent-Toolkit-hol-guard.git
+cd NeMo-Agent-Toolkit-hol-guard
+uv sync --extra test
+uv run pytest
+```
 
 ## Configure
 
@@ -117,10 +106,14 @@ pytest
 
 The test suite covers event normalization, allow/deny exit handling, the zero-execution deny invariant, exactly-once allow delegation, middleware configuration, and entry-point loading. GitHub Actions tests Python 3.11, 3.12, and 3.13 against the declared NeMo Agent Toolkit 1.8 compatibility floor.
 
+## Releasing
+
+Releases are published by `.github/workflows/release.yml` through PyPI trusted publishing. Bump `version` in `pyproject.toml`, merge, then push a matching tag (for example `v0.1.0`). The workflow checks the tag against the version, builds the sdist and wheel, tests the built wheel, and publishes it.
+
 ## Package metadata
 
 - Repository: `hashgraph-online/NeMo-Agent-Toolkit-hol-guard`
-- Planned distribution: `nemo-agent-toolkit-hol-guard`
+- Distribution: [`nemo-agent-toolkit-hol-guard`](https://pypi.org/project/nemo-agent-toolkit-hol-guard/) (pure-Python wheel and sdist)
 - Import namespace: `nat.plugins.hol_guard`
 - Entry point: `nat_hol_guard = nat.plugins.hol_guard.register`
 - Middleware `_type`: `hol_guard`

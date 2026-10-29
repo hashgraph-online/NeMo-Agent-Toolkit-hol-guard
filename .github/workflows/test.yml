@@ -22,3 +22,23 @@ jobs:
         run: python -m pip install -e '.[test]'
       - name: Test
         run: pytest
+
+  wheel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install build twine
+          python -m build
+          python -m twine check --strict dist/*
+      - name: Test the built wheel
+        run: |
+          python -m venv /tmp/wheel-env
+          /tmp/wheel-env/bin/pip install dist/*.whl pytest pytest-asyncio
+          cd /tmp
+          /tmp/wheel-env/bin/python -c "from importlib.metadata import entry_points; [e.load() for e in entry_points(group='nat.plugins') if e.name == 'nat_hol_guard'] or exit('nat_hol_guard entry point missing')"
+          /tmp/wheel-env/bin/python -m pytest "$GITHUB_WORKSPACE/tests" -p no:cacheprovider --import-mode=importlib
