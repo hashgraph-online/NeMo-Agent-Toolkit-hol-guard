@@ -14,6 +14,7 @@ readme = "README.md"
 license = { text = "Apache-2.0" }
 authors = [{ name = "Hashgraph Online" }]
 dependencies = [
+  "hol-guard>=3.0,<4",
   "nvidia-nat-core>=1.8,<2",
 ]
 

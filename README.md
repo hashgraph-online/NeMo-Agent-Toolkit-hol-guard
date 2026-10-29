@@ -20,7 +20,7 @@ HOL Guard remains local-first. This integration does not require Guard Cloud. Co
 
 This repository is the provider-owned integration requested in [NVIDIA/NeMo-Agent-Toolkit#2176](https://github.com/NVIDIA/NeMo-Agent-Toolkit/issues/2176). It is published to PyPI as [`nemo-agent-toolkit-hol-guard`](https://pypi.org/project/nemo-agent-toolkit-hol-guard/) with a prebuilt wheel, and is being prepared for NVIDIA's initial **Listed** third-party plugin review. It is not yet an NVIDIA-listed plugin.
 
-The integration targets NeMo Agent Toolkit 1.8 and later 1.x releases, and the HOL Guard 3.x CLI. HOL Guard is intentionally installed as a separate CLI rather than as a Python dependency of this package. That keeps NeMo Agent Toolkit's Python dependency graph isolated while preserving a narrow local subprocess boundary for Guard decisions.
+The integration targets NeMo Agent Toolkit 1.x releases that allow `cryptography` 50 or later, and the HOL Guard 3.x CLI. HOL Guard is a Python dependency of this package, so installing the plugin also installs the `hol-guard` executable into the same environment. Guard decisions still run in a local `hol-guard` subprocess.
 
 ## Install
 
@@ -32,13 +32,7 @@ uv add nemo-agent-toolkit-hol-guard
 pip install nemo-agent-toolkit-hol-guard
 ```
 
-Install the HOL Guard 3.x CLI separately so the `hol-guard` executable is on `PATH`, for example with an isolated tool environment:
-
-```bash
-pipx install 'hol-guard>=3.0,<4'
-```
-
-The plugin package itself depends only on the public `nvidia-nat-core` plugin surface. It invokes the separately installed HOL Guard executable at runtime.
+Installing the plugin also installs HOL Guard 3.x, which provides the `hol-guard` executable the middleware calls.
 
 ### Development checkout
 
