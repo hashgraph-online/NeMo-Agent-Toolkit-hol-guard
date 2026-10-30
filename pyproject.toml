@@ -7,15 +7,15 @@ packages = ["src/nat"]
 
 [project]
 name = "nemo-agent-toolkit-hol-guard"
-version = "0.1.0"
+version = "0.2.0"
 requires-python = ">=3.11,<3.14"
 description = "HOL Guard runtime security middleware for NVIDIA NeMo Agent Toolkit"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 authors = [{ name = "Hashgraph Online" }]
 dependencies = [
-  "hol-guard>=3.0,<4",
-  "nvidia-nat-core>=1.8,<2",
+  "hol-guard>=3.59,<4",
+  "nvidia-nat-core>=1.10,<2",
 ]
 
 [project.optional-dependencies]
